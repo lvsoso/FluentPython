@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """
 Created on Thu May 11 22:12:12 2017
+
+#python 3
+
 """
 
 
@@ -12,6 +15,8 @@ import string
 import functools
 import operator
 import itertools
+import numbers
+
 
 class Vector:
     
@@ -56,6 +61,14 @@ class Vector:
     def __abs__(self):
         """绝对值"""
         return math.sqrt(sum(x * x for x in self))
+    
+    def __neg__(self):
+        """负值"""
+        return Vector(-x for x in self)
+    
+    def __pos__(self):
+        """正值"""
+        return Vector(self)
 
     def __bool__(self):
         """布尔值"""
@@ -140,9 +153,49 @@ class Vector:
         #创建生成器表达式，按需格式化各个坐标元素。
         components = (format(c, fmt_spec) for c in coords)
         return outer_fmt.format(', '.join(components))
+    
+    def __add__(self, other):
+        """加法"""
+        #python 3
+        try:
+            pairs = itertools.zip_longest(self, other, fillvalue=0.0)
+            return Vector(a + b for a, b in pairs)
+        except TypeError:
+            return NotImplemented
+    
+    def __radd__(self, other):
+        return self + other
+    
+    def __mul__(self, scalar):
+        """乘法"""
+        if isinstance(scalar, numbers.Real):
+            return Vector(n * scalar for n in self)
+        else:
+            return NotImplemented
+    
+    def __rmul__(self, scalar):
+        return self * scalar
+    
+    
+    def __natmul__(self, scalar):
+        try:
+            return sum(a * b for a, b in zip(self, other))
+        except TypeError:
+            return NotImplemented
+    
+    def __rmatmul__(self, scalar):
+        return self @ scalar
+        
             
                                    
 if __name__ == "__main__":
-    print format(Vector([1, 1]), 'h')
-    print format(Vector([1, 1]), '.3eh')
-    print format(Vector([-1, -1, -1, -1]), 'h')
+    print(format(Vector([1, 1]), 'h'))
+    print(format(Vector([1, 1]), '.3eh'))
+    print(format(Vector([-1, -1, -1, -1]), 'h'))
+    print("=========================")
+    v1 = Vector([3, 4, 5])
+    vv = v1 + (10, 20, 30)
+    print("=========================")
+    v2 = Vector([1.0, 2.0, 3.0])
+    print(14 * v1)
+
