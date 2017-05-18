@@ -1,7 +1,10 @@
+#! /usr/bin/env python3
 #coding=utf-8
 
 import warnings
 import osconfeed
+import shelve
+
 
 DB_NAME = 'data/schedule1_db'
 CONFERENCE = 'conference.115'
@@ -19,3 +22,13 @@ def load_db(db):
             key = '{}.{}'.format(record_type, record['serial'])
             record['serial'] = key
             db[key] = Record(**record)
+
+if __name__ == "__main__":
+    db = shelve.open(DB_NAME)
+    if CONFERENCE not in db:
+        load_db(db)
+    speaker = db['speaker.3471']
+    print(type(speaker))
+    print(speaker.name, speaker.twitter)
+    db.close()
+
