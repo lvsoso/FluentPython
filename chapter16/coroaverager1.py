@@ -3,13 +3,13 @@
 Created on Sun May 14 22:11:56 2017
 """
 from coroutil import coroutine
-
+from inspect import getgeneratorstate
 
 @coroutine
 def averager():
     """
     >>> coro_avg = averager()
-   
+
     >>> coro_avg.send(10)
     10.0
     >>> coro_avg.send(30)
@@ -25,4 +25,7 @@ def averager():
         total += term
         count += 1
         average = total//count
-        
+
+if __name__ == "__main__":
+    coro_avg = averager()
+    print(getgeneratorstate(coro_avg))
